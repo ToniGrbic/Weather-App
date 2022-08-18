@@ -37,9 +37,6 @@ margin: 0 auto;
     display: flex;
     justify-content: center;
 }
-.temperature:hover{
-    cursor: pointer;
-}
 
 .temperature-section h2{
     font-size:40px;
@@ -67,4 +64,16 @@ margin: 0 auto;
 
 .hours-minutes{
     font-size: 40px;
+}
+
+.unactive{
+    color: gray;
+}
+
+.celsius:hover{
+    cursor:pointer;
+}
+
+.fahrenheit:hover{
+    cursor:pointer;  
 }

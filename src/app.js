@@ -15,25 +15,28 @@ const body_html = document.querySelector('body')
 const humidity = document.querySelector('#humidity')
 const pressure = document.querySelector('#pressure')
 const wind = document.querySelector("#wind")
+const celsius = document.querySelector(".celsius")
+const fahrenheit = document.querySelector(".fahrenheit")
+
 
 const windDirection = (windDeg)=>{
     let windDirection = ''
-      if(windDeg === 90){
+      if(windDeg === 0){
             windDirection = 'North';
-        }else if(windDeg === 0){
+        }else if(windDeg === 90){
             windDirection = 'East';
         }else if(windDeg === 180){
-            windDirection = 'West';
-        }else if(windDeg === 270){
             windDirection = 'South';
+        }else if(windDeg === 270){
+            windDirection = 'West';
         }else if( windDeg > 0 && windDeg < 90){
             windDirection = 'North East';
         }else if( windDeg > 90 && windDeg < 180){
-            windDirection = 'North West';
+            windDirection = 'South East';
         }else if( windDeg > 180 && windDeg < 270){
             windDirection = 'South West';
         }else{
-            windDirection = 'South East';
+            windDirection = 'North West';
         }
      return windDirection
 }
@@ -49,7 +52,7 @@ if(navigator.geolocation){
             console.log(data);
             
             const tempCelsius = data.main.temp - 273.15
-            const tempFarenheit = tempCelsius * (9/5) + 32
+            const tempFahrenheit = tempCelsius * (9/5) + 32
 
             description.textContent = data.weather[0]['description'];
             weather_img.src = `http://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png`;
@@ -66,18 +69,23 @@ if(navigator.geolocation){
             wind.textContent = `wind: ${windSpeed} m/s from ${direction}`
 
         //CHANGE TEMP UNIT ONCLICK
-            temperature.addEventListener('click', changeTempUnit);
+            temp_unit.addEventListener('click', function(e){
+                console.log(e.target.classList)
+                if(e.target.classList.contains("celsius")){
+                    switchActiveTempUnit(fahrenheit, e.target)
+                    temperature.textContent = (tempCelsius).toFixed(1)    
+                }else if(e.target.classList.contains("fahrenheit")){
+                    switchActiveTempUnit(celsius, e.target)
+                    temperature.textContent = (tempFahrenheit).toFixed(1)
+                }
+            });
 
-            function changeTempUnit(){
-                if(temp_unit.textContent === '°C'){
-                    temp_unit.textContent = '°F';
-                    temperature.textContent = (tempFarenheit).toFixed(1);
-            
-                }else if(temp_unit.textContent === '°F'){
-                    temp_unit.textContent = '°C';
-                    temperature.textContent = (tempCelsius).toFixed(1);
-                } 
-            } 
+            function switchActiveTempUnit(unactiveUnit, target){
+                if(target.classList.contains('unactive')){
+                    target.classList.remove('unactive')
+                    unactiveUnit.classList.add('unactive')
+                }  
+            }
     });  
 });  
 //DATE AND TIME
@@ -102,7 +110,6 @@ function getTime(){
      
      AM_PM = hours > 12 ? 'PM' : 'AM'
      
-
      if(hours >= 18 || hours <= 6){
         body_html.classList.add('night-background')
         body_html.classList.remove('day-background')
@@ -111,8 +118,8 @@ function getTime(){
         body_html.classList.remove('night-background')
      }
      
-     hours_minutes.innerHTML = `${hours}:${minutes}:${seconds} ${AM_PM}`
-     date_time.innerHTML = `${weekday}, ${month} ${date}`
+     hours_minutes.textContent = `${hours}:${minutes}:${seconds} ${AM_PM}`
+     date_time.textContent = `${weekday}, ${month} ${date}`
      }
      setInterval(getTime, 1000)
      getTime()
